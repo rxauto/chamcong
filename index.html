@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="./app.js"></script>
+	<link href="./style.css" rel="stylesheet" type="text/css">
+    <title>Chấm Công</title>
+</head>
+<body>
+
+	<button onclick="init()">Chấm công</button>
+	<br>
+    
+	<input style="display:none" type="file" id="ctrl" accept="image/*" capture="camera">
+	<canvas></canvas>
+	<div id="timeNow">Thời gian: </div>
+	<div id="placeNow">Địa điểm: </div>
+	<br>
+	<script>
+	  var input = document.querySelector('input[type=file]'); // see Example 4
+	  input.onchange = function () {
+		var file = input.files[0];
+		//upload(file);
+		main_app();
+		drawOnCanvas(file);   // see Example 6
+		//displayAsImage(file); // see Example 7
+	  };
+	 
+	  function upload(file) {
+		var form = new FormData(),
+			xhr = new XMLHttpRequest();
+	 
+		form.append('image', file);
+		xhr.open('post', 'server.php', true);
+		xhr.send(form);
+	  }
+	 
+	  function drawOnCanvas(file) {
+		var reader = new FileReader();
+		reader.onload = function (e) {
+		  var dataURL = e.target.result,
+			  c = document.querySelector('canvas'), // see Example 4
+			  ctx = c.getContext('2d'),
+			  img = new Image();
+	 
+		  img.onload = function() {
+			c.width = img.width;
+			c.height = img.height;
+			ctx.drawImage(img, 0, 0);
+		  };
+	 
+		  img.src = dataURL;
+		};
+	 
+		reader.readAsDataURL(file);
+	  }
+	 
+	  function displayAsImage(file) {
+		var imgURL = URL.createObjectURL(file),
+			img = document.createElement('img');
+	 
+		img.onload = function() {
+		  URL.revokeObjectURL(imgURL);
+		};
+	 
+		img.src = imgURL;
+		document.body.appendChild(img);
+	  }
+	</script>
+
+</body>
+</html>
